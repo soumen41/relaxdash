@@ -65,22 +65,23 @@
           </table>
           <div class="form-check-inline">
             <label class="form-check-label">
-              <input type="radio" class="form-check-input" name="optradio" id="fraud">Fraud
+              <input type="radio" class="form-check-input" name="optradio" value="1" id="fraud">Fraud
             </label>
           </div>
           <div class="form-check-inline">
             <label class="form-check-label">
-              <input type="radio" class="form-check-input" name="optradio" id="blacklist">Blacklist
+              <input type="radio" class="form-check-input" name="optradio" value="2" id="blacklist">Blacklist
             </label>
           </div>
           <div class="form-check-inline disabled">
             <label class="form-check-label">
-              <input type="radio" class="form-check-input" name="optradio" id="refund">Refund
+              <input type="radio" class="form-check-input" name="optradio" value="3" id="refund">Refund
             </label>
           </div>
           <button type="button" class="btn btn-primary" id="apply">Apply</button>
     </div>
 @push('js_src')
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
 $(document).ready(function () {
     $('#master').on('click', function(e) {  
@@ -94,13 +95,38 @@ $(document).ready(function () {
 });
 $("#apply").on("click", function(e){
     e.preventDefault()
-    if($("#fraud").is(':checked',true)){
+    if($('input[name="optradio"]').is(':checked')){
+        var opvalue = $("input[name='optradio']:checked").val();
+        sendValue(opvalue)
+    }else{
+        alert("Select atleast radio.");
+    }
+
+    function sendValue(param){
         var allVals = [];
         $(".child:checked").each(function() {    
             allVals.push($(this).attr('data-id'));
         });
-        console.log(allVals);
-    }
+        if(allVals.length <=0)
+        {    
+          alert("Please select checkbox.");   
+        }else{
+            var join_selected_values = allVals.join(",");
+            $.ajax({
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                type: "post",
+                url: "{{ route('getData') }}",
+                data: {
+                'ids':join_selected_values,
+                "param": param
+                },
+                dataType: "json",
+                success: function (response) {
+                    console.log(response)
+                }
+            });
+        }
+    }        
 })
 </script>    
 @endpush

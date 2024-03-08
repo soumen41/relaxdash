@@ -21,4 +21,5 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::post('/getData', [App\Http\Controllers\HomeController::class, 'apiCall'])->name('getData');
 Route::post('/import', [App\Http\Controllers\HomeController::class, 'import'])->name('import');

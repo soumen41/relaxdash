@@ -46,4 +46,8 @@ class HomeController extends Controller
 
     return redirect()->back()->with('success', 'CSV file imported successfully.');
     }
+
+    function apiCall(Request $request){
+        dd($request->all());
+    }
 }
